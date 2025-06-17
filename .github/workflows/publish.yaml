@@ -21,6 +21,24 @@ jobs:
                   PACKAGE_JSON=$(cat package.json | jq -c .)
                   echo "package_json=$PACKAGE_JSON" >> $GITHUB_OUTPUT
 
+            - name: Check for dependency
+              id: check_dependency
+              run: |
+                  DEPENDENCY_NAME="lodash"
+                  if jq -e ".dependencies[\"$DEPENDENCY_NAME\"] // .devDependencies[\"$DEPENDENCY_NAME\"]" package.json > /dev/null; then
+                    echo "found=true" >> $GITHUB_OUTPUT
+                  else
+                    echo "found=false" >> $GITHUB_OUTPUT
+                  fi
+
+            - name: Print dependency check result
+              run: |
+                  if [ "${{ steps.check_dependency.outputs.found }}" = "true" ]; then
+                    echo "La dependencia está instalada."
+                  else
+                    echo "La dependencia NO está instalada."
+                  fi
+
             - name: Print project name
               run: |
                   PROJECT_NAME=$(jq -r .name package.json)
