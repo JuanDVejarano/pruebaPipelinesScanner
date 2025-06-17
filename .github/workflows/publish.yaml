@@ -1,0 +1,31 @@
+name: Report package.json on PR
+
+on:
+    pull_request:
+        types: [opened, synchronize, reopened]
+    push:
+        branches:
+            - main
+
+jobs:
+    report-package-json:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: Read package.json
+              id: read_package
+              run: |
+                  cat package.json
+                  PACKAGE_JSON=$(cat package.json | jq -c .)
+                  echo "package_json=$PACKAGE_JSON" >> $GITHUB_OUTPUT
+
+            # Ejemplo: Enviar a una API (reemplaza la URL y el método según tu necesidad)
+            #- name: Report to API
+            # env:
+            #     PACKAGE_JSON: ${{ steps.read_package.outputs.package_json }}
+            # run: |
+            #     curl -X POST -H "Content-Type: application/json" \
+            #       -d "$PACKAGE_JSON" \
+            #       https://tu-api.com/guardar-package-json
