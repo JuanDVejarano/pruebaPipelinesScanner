@@ -21,6 +21,11 @@ jobs:
                   PACKAGE_JSON=$(cat package.json | jq -c .)
                   echo "package_json=$PACKAGE_JSON" >> $GITHUB_OUTPUT
 
+            - name: Print project name
+              run: |
+                  PROJECT_NAME=$(jq -r .name package.json)
+                  echo "Project name: $PROJECT_NAME"
+
             # Ejemplo: Enviar a una API (reemplaza la URL y el método según tu necesidad)
             #- name: Report to API
             # env:
